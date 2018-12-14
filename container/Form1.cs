@@ -15,6 +15,11 @@ namespace container
         public Form1()
         {
             InitializeComponent();
+            Container container = new Container(10,10,0,31);
+
+            List<Container> list = new List<Container>();
+
+            list.Add(container);
         }
     }
 }
