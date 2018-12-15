@@ -37,7 +37,9 @@ namespace container
                 CurrentWeight += container.Height;
             }
             ListContainer = listContainer;
-            CreateGrid(this);
+
+            Grid = CreateGrid(this);
+            AssignContainersToGrid(Grid);
 
             ListErrorMessages = new List<string>();
 
@@ -60,7 +62,7 @@ namespace container
             }
         }
 
-        private void CreateGrid(Ship ship)
+        private Container[,] CreateGrid(Ship ship)
         {
             Dictionary<string, int> containerTypeCount = new Dictionary<string, int>();
 
@@ -87,26 +89,69 @@ namespace container
                     }
                 }
             }
-            //HIERAAN WERKEN
-            for (int i = 0; i < ship.MaxColumns; i+=2)
+            //Calculate the amount of column
+            if(containerTypeCount["Waardevolle"]/2 >= containerTypeCount["Gekoelde"]/5)
             {
-                if (containerTypeCount["Waardevolle"] < i)
+                for (int i = 2; i < ship.MaxColumns; i += 2)
                 {
-                    MaxRows = 50;
+                    if (containerTypeCount["Waardevolle"] < i)
+                    {
+                        ColumnAmount = i / 2;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 5; i < ship.MaxColumns; i += 5)
+                {
+                    if (containerTypeCount["Gekoelde"] < i)
+                    {
+                        ColumnAmount = i / 2;
+                        break;
+                    }
+                }
+            }
+
+            //Calculate the amount of rows
+            for (int i = ColumnAmount*5; i < ship.MaxRows*5; i += ColumnAmount*5 )
+            {
+                if (ListContainer.Count < i)
+                {
+                    RowAmount = (i/2)/5;
                     break;
                 }
             }
 
+            return new Container[ColumnAmount, RowAmount];
         }
 
-        private void calculateTotalColumns(Ship ship)
+        public void AssignContainersToGrid(Container[,] grid)
         {
+            //Assign the chilled containers
+            foreach (Container container in ListContainer)
+            {
+                if (container.Type == Container.ListOfTypes[1])
+                {
+                    //c = column num
+                    for (int c = 0; c < grid.GetLength(1); c++)
+                    {
+                        //r = row num
+                        for (int r = 0; r < grid.GetLength(0); r++)
+                        {
+                            if (grid[c,r] == null)
+                            {
+                                grid[c, r] = container;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
 
-        }
+            //Assign the valuable containers
 
-        private void calculateTotalRows(Ship ship)
-        {
-
+            //Assign the normal containers
         }
     }
 }
