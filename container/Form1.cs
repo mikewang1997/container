@@ -15,11 +15,31 @@ namespace container
         public Form1()
         {
             InitializeComponent();
-            Container container = new Container(10,10,0,31);
+            List<Container> listContainers = new List<Container>();
 
-            List<Container> list = new List<Container>();
+            listContainers.Add(new Container(10, 10, 0, 10));
+            listContainers.Add(new Container(10, 10, 1, 10));
+            listContainers.Add(new Container(10, 10, 1, 10));
+            listContainers.Add(new Container(10, 10, 2, 10));
+            listContainers.Add(new Container(10, 10, 0, 10));
+            listContainers.Add(new Container(10, 10, 0, 10));
 
-            list.Add(container);
+            Ship eenSchip = new Ship(50,50,150, listContainers);
+
+
+            //if (container.ListErrorMessages.Count == 0)
+            //{
+
+            //}
+            //else
+            //{
+            //    foreach (var item in collection)
+            //    {
+
+            //    }
+            //    MessageBox.Show();
+            //}
+
         }
     }
 }

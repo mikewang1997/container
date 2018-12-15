@@ -11,24 +11,49 @@ namespace container
         //In tons
         public int Height { get; set; }
         public int Width { get; set; }
-        public int Type { get; set; }
+        public string Type { get; set; }
         public int Weight { get; set; }
+
+        public static Dictionary<int, string> ListOfTypes = new Dictionary<int, string>
+        {
+            { 0, "Normale" },
+            { 1, "Gekoelde" },
+            { 2, "Waardevolle" }
+        };
+        //checking related
+        public List<string> ListErrorMessages { get; set; }
 
         public Container(int height, int width, int type, int weight)
         {
             Height = height;
-            Width = width;
-            Type = type;
-
-            weight += 4;
-            if (!(weight > 30))
+            Width = width+4;
+            if (ListOfTypes.TryGetValue(type, out string value))
             {
-                Weight = weight;
+                Type = value;
+            }
+            ListErrorMessages = new List<string>();
+            Weight = weight + 4;
+
+            if (!containerMeetsRequirements(this))
+            {
+                Height = 0;
+                Width = 0;
+                Type = "null";
+                Weight = 0;
+            }
+
+        }
+
+        private bool containerMeetsRequirements(Container container)
+        {
+            if (!(container.Weight > 30))
+            {
+                return true;
             }
             else
             {
-                //throw new System.ArgumentException("Weight is over 30ton", "Weight");
-                System.Windows.Forms.MessageBox.Show("Weight is over 30 ton!");
+                container.ListErrorMessages.Add("De container weegt over 30 ton!");
+                return false;
             }
         }
     }
