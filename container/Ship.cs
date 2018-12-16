@@ -314,42 +314,112 @@ namespace container
 
                     for (int c = 0; c < ColumnAmount; c++)
                     {
-                        for (int r = 0; r < RowAmount; r ++)
+                        for (int r = 0; r < RowAmount; r++)
                         {
                             for (int s = 0; s < StackAmount; s++)
                             {
-                                if (grid[c, r, s] == null)
+                                if (c < ColumnAmount & r < RowAmount & s < StackAmount & container.Assigned == false)
                                 {
-                                    if (s == 0)
+                                    if (grid[c, r, s] == null)
                                     {
-                                        grid[c, r, s] = container;
-                                        container.Assigned = true;
-                                        c = Int32.MaxValue - ColumnAmount;
-                                        r = Int32.MaxValue - RowAmount;
-                                        s = Int32.MaxValue - StackAmount;
-                                        break;
-                                    }
-                                    if (grid[c, r, s - 1] != null)
-                                    {
-                                        if (grid[c, r, s - 1].Type != Container.ListOfTypes[2])
+                                        //Check in current stack if there is a valuable container in it, if it is skip to next column
+                                        if (c < ColumnAmount & r < RowAmount & s < StackAmount & container.Assigned == false)
+                                        {
+                                            for (int i = 0; i < StackAmount; i++)
+                                            {
+                                                if (i > 0 & grid[c, r, i] != null)
+                                                {
+                                                    if (grid[c, r, i].Type == Container.ListOfTypes[2])
+                                                    {
+                                                        //c = Int32.MaxValue - ColumnAmount;
+                                                        //r = Int32.MaxValue - RowAmount;
+                                                        c++;
+                                                        //s = Int32.MaxValue - StackAmount;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        //Check in the previous row if there is a valuable container in stack 0, if it is skip to next column
+                                        if (c < ColumnAmount & r < RowAmount & s < StackAmount & container.Assigned == false)
+                                        {
+                                            if (r > 0 & grid[c, r - 1, 0] != null)
+                                            {
+                                                if (grid[c, r - 1, 0].Type == Container.ListOfTypes[2])
+                                                {
+                                                    //c = Int32.MaxValue - ColumnAmount;
+                                                    c++;
+                                                    //r = Int32.MaxValue - RowAmount;
+                                                    //s = Int32.MaxValue - StackAmount;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        //if (c < ColumnAmount | r < RowAmount | s < StackAmount)
+                                        //{
+                                        //    if (r > 0 & grid[c, r - 1, StackAmount] != null)
+                                        //    {
+                                        //        if (grid[c, r - 1, StackAmount].Type == Container.ListOfTypes[2])
+                                        //        {
+                                        //            c = Int32.MaxValue - ColumnAmount;
+                                        //            r = Int32.MaxValue - RowAmount;
+                                        //            s = Int32.MaxValue - StackAmount;
+                                        //            break;
+                                        //        }
+                                        //    }
+                                        //}
+
+
+                                        if (c < ColumnAmount & r < RowAmount & s < StackAmount & container.Assigned == false)
                                         {
                                             grid[c, r, s] = container;
                                             container.Assigned = true;
-                                            c = Int32.MaxValue - ColumnAmount;
-                                            r = Int32.MaxValue - RowAmount;
-                                            s = Int32.MaxValue - StackAmount;
+                                            //c = Int32.MaxValue - ColumnAmount;
+                                            //r = Int32.MaxValue - RowAmount;
+                                            //s = Int32.MaxValue - StackAmount;
                                             break;
                                         }
 
+                                        //if (c < ColumnAmount | r < RowAmount | s < StackAmount)
+                                        //{
+                                        //    if (s == 0)
+                                        //    {
+                                        //        grid[c, r, s] = container;
+                                        //        container.Assigned = true;
+                                        //        c = Int32.MaxValue - ColumnAmount;
+                                        //        r = Int32.MaxValue - RowAmount;
+                                        //        s = Int32.MaxValue - StackAmount;
+                                        //        break;
+                                        //    }
+                                        //}
+
+                                        //if (c < ColumnAmount | r < RowAmount | s < StackAmount)
+                                        //{
+                                        //    if (grid[c, r, s - 1] != null)
+                                        //    {
+                                        //        if (grid[c, r, s - 1].Type != Container.ListOfTypes[2])
+                                        //        {
+                                        //            grid[c, r, s] = container;
+                                        //            container.Assigned = true;
+                                        //            c = Int32.MaxValue - ColumnAmount;
+                                        //            r = Int32.MaxValue - RowAmount;
+                                        //            s = Int32.MaxValue - StackAmount;
+                                        //            break;
+                                        //        }
+
+                                        //    }
+                                        //}
                                     }
                                 }
                             }
                         }
                     }
+
                     if (container.Assigned == false)
                     {
                         container.ListErrorMessages.Add("Kon de container geen plek geven in het schip, verhoog het grootte van het schip");
-                        ListContainer[ListContainer.IndexOf(container)].ListErrorMessages.Add("Kon de container geen plek geven in het schip, verhoog het grootte van het schip");
+                        //ListContainer[ListContainer.IndexOf(container)].ListErrorMessages.Add("Kon de container geen plek geven in het schip, verhoog het grootte van het schip");
                     }
                 }
             }

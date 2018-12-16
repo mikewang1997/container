@@ -16,6 +16,12 @@ namespace container
         {
             InitializeComponent();
             List<Container> listContainers = new List<Container>();
+            listContainers.Add(new Container(10, 10, "Waardevolle", 1));
+            listContainers.Add(new Container(10, 10, "Waardevolle", 2));
+            listContainers.Add(new Container(10, 10, "Waardevolle", 3));
+            listContainers.Add(new Container(10, 10, "Waardevolle", 4));
+            listContainers.Add(new Container(10, 10, "Waardevolle", 5));
+            listContainers.Add(new Container(10, 10, "Waardevolle", 6));
             listContainers.Add(new Container(10, 10, "Gekoelde", 10));
             listContainers.Add(new Container(10, 10, "Gekoelde", 10));
             listContainers.Add(new Container(10, 10, "Gekoelde", 10));
@@ -26,16 +32,6 @@ namespace container
             listContainers.Add(new Container(10, 10, "Gekoelde", 10));
             listContainers.Add(new Container(10, 10, "Gekoelde", 10));
             listContainers.Add(new Container(10, 10, "Gekoelde", 10));
-            listContainers.Add(new Container(10, 10, "Waardevolle", 10));
-            listContainers.Add(new Container(10, 10, "Waardevolle", 10));
-            listContainers.Add(new Container(10, 10, "Waardevolle", 10));
-            listContainers.Add(new Container(10, 10, "Waardevolle", 10));
-            listContainers.Add(new Container(10, 10, "Waardevolle", 10));
-            listContainers.Add(new Container(10, 10, "Waardevolle", 10));
-            listContainers.Add(new Container(10, 10, "Waardevolle", 10));
-            listContainers.Add(new Container(10, 10, "Waardevolle", 10));
-            listContainers.Add(new Container(10, 10, "Waardevolle", 10));
-            listContainers.Add(new Container(10, 10, "Waardevolle", 10));
             listContainers.Add(new Container(10, 10, "Normale", 10));
             listContainers.Add(new Container(10, 10, "Normale", 10));
             listContainers.Add(new Container(10, 10, "Normale", 10));

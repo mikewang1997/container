@@ -12,10 +12,12 @@ namespace container
 
         public ShipContainer(Container container) : base(container.Height, container.Width, container.Type, container.Weight)
         {
+            Weight = container.Weight;
             Assigned = false;
         }
         public ShipContainer(Container container, bool assigned) : base(container.Height, container.Width, container.Type, container.Weight)
         {
+            Weight = container.Weight;
             Assigned = assigned;
         }
     }

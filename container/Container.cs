@@ -28,7 +28,7 @@ namespace container
         public Container(int height, int width, string type, int weight)
         {
             Height = height;
-            Width = width+4;
+            Width = width;
             foreach(var item in ListOfTypes)
             {
                 if (item.Value == type)
