@@ -113,39 +113,70 @@ namespace container
                     }
                 }
             }
-            //Calculate the amount of column
-            if(containerTypeCount["Waardevolle"]/2 >= containerTypeCount["Gekoelde"]/5)
+            //Calculate column based of valuable containers
+            if      (containerTypeCount["Waardevolle"] > 0)
             {
-                for (int i = 2; i < ship.MaxColumns; i += 2)
+                if (containerTypeCount["Gekoelde"] < StackAmount)
                 {
-                    if (containerTypeCount["Waardevolle"] < i)
+                    if (containerTypeCount["Waardevolle"] < ship.MaxColumns)
                     {
-                        ColumnAmount = i / 2;
-                        break;
+                        RowAmount = containerTypeCount["Waardevolle"];
+                    }
+                    else
+                    {
+                        ListErrorMessages.Add("Te veel waardevolle containers, verhoog het hoogte of verlaag het aantal waardevolle containers");
                     }
                 }
             }
-            else
+            //Calculate column based of chilled containers
+            if (containerTypeCount["Gekoelde"] > StackAmount)
             {
-                for (int i = StackAmount; i < ship.MaxColumns; i += StackAmount)
+                if (Math.Ceiling((double)containerTypeCount["Gekoelde"] / StackAmount) > 1)
                 {
-                    if (containerTypeCount["Gekoelde"] < i)
-                    {
-                        ColumnAmount = i / 2;
-                        break;
-                    }
+                    ColumnAmount = Convert.ToInt32(Math.Ceiling((double)containerTypeCount["Gekoelde"] / StackAmount));
+                }
+                else
+                {
+                    ColumnAmount = Convert.ToInt32(containerTypeCount["Gekoelde"] / StackAmount);
                 }
             }
 
             //Calculate the amount of rows
-            for (int i = ColumnAmount*StackAmount; i < ship.MaxRows*StackAmount; i += ColumnAmount*StackAmount)
+            //for (int i = ColumnAmount*StackAmount; i < ship.MaxRows*StackAmount; i += ColumnAmount*StackAmount)
+            //{
+            //    if (ListContainer.Count < i)
+            //    {
+            //        RowAmount = i/StackAmount;
+            //        break;
+            //    }
+            //}
+            int maxRowsForValuableContainer = MaxRows;
+
+            int totalAssignable = Convert.ToInt32(Math.Ceiling((double)containerTypeCount["Gekoelde"] / StackAmount) * (MaxRows-1));
+            int maxAssignable = ColumnAmount * MaxRows;
+
+            int totalValuableAssignable = totalAssignable + maxAssignable;
+
+            //if (containerTypeCount["Gekoelde"] / StackAmount > 1)
+            //{
+            //    maxRowsForValuableContainer = MaxRows - 1;
+            //}
+            for (int i = StackAmount; i < MaxRows*StackAmount*ColumnAmount; i+=StackAmount)
             {
-                if (ListContainer.Count < i)
+                if (containerTypeCount["Waardevolle"] <= i & ListContainer.Count <= i)
                 {
                     RowAmount = i/StackAmount;
                     break;
                 }
             }
+            //for (int i = 0; i < maxRowsForValuableContainer*ColumnAmount; i++)
+            //{
+            //    if (containerTypeCount["Waardevolle"] <= i)
+            //    {
+            //        RowAmount = i;
+            //        break;
+            //    }
+            //}
 
             return new Container[ColumnAmount, RowAmount, StackAmount];
         }
@@ -268,6 +299,9 @@ namespace container
                 }
                 
             }
+
+            //0,naast getal valuable container, niet 0 stack 
+            //HIERAAN WERKEN
 
             //Assign the valuable containers
             foreach (ShipContainer container in listValuableContainers)
