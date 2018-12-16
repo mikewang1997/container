@@ -14,6 +14,8 @@ namespace container
         public string Type { get; set; }
         public int Weight { get; set; }
 
+
+
         public static Dictionary<int, string> ListOfTypes = new Dictionary<int, string>
         {
             { 0, "Normale" },
@@ -23,13 +25,17 @@ namespace container
         //checking related
         public List<string> ListErrorMessages { get; set; }
 
-        public Container(int height, int width, int type, int weight)
+        public Container(int height, int width, string type, int weight)
         {
             Height = height;
             Width = width+4;
-            if (ListOfTypes.TryGetValue(type, out string value))
+            foreach(var item in ListOfTypes)
             {
-                Type = value;
+                if (item.Value == type)
+                {
+                    Type = type;
+                    break;
+                }
             }
             ListErrorMessages = new List<string>();
             Weight = weight + 4;

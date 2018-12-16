@@ -15,21 +15,25 @@ namespace container
         public int CurrentWeight { get; private set; }
         public int RowAmount { get; private set; }
         public int ColumnAmount { get; private set; }
-        public Container[,] Grid { get; private set; }
+        public int StackAmount { get; private set; }
+        public Container[,,] Grid { get; private set; }
         public List<Container> ListContainer { get; private set; }
 
         public int MaxColumns { get; private set; }
         public int MaxRows{ get; private set; }
+        public int MaxStack { get; private set; }
 
         //checking related
         public List<string> ListErrorMessages { get; set; }
 
-        public Ship(int shipHeight, int shipWidth, int maxWeight, List<Container> listContainer)
+        public Ship(int shipHeight, int shipWidth, int maxWeight, int stackAmount ,List<Container> listContainer)
         {
             ShipHeight = shipHeight;
             ShipWidth = shipWidth;
+            StackAmount = stackAmount;
             MaxColumns = shipWidth / 5;
             MaxRows = shipHeight / 5;
+            MaxStack = 5;
             MaxWeight = maxWeight;
             ListContainer = listContainer;
             foreach (Container container in ListContainer)
@@ -51,18 +55,38 @@ namespace container
 
         private bool shipMeetsRequirements(Ship ship)
         {
+            bool WeightAccepted = false;
+            bool StackAccepted = false;
+
             if (CurrentWeight >= (ship.MaxWeight/2))
+            {
+                WeightAccepted = true;
+            }
+            else
+            {
+                ship.ListErrorMessages.Add("Schip voldoet niet aan de eis: minimaal 50% gewicht");
+            }
+
+            if (StackAmount <= MaxStack)
+            {
+                StackAccepted = true;
+            }
+            else
+            {
+                ship.ListErrorMessages.Add("Kan niet hoger stapelen dan 5");
+            }
+
+            if (WeightAccepted & StackAccepted == true)
             {
                 return true;
             }
             else
             {
-                ship.ListErrorMessages.Add("Schip voldoet niet aan de eis: minimaal 50% gewicht");
                 return false;
             }
         }
 
-        private Container[,] CreateGrid(Ship ship)
+        private Container[,,] CreateGrid(Ship ship)
         {
             Dictionary<string, int> containerTypeCount = new Dictionary<string, int>();
 
@@ -103,7 +127,7 @@ namespace container
             }
             else
             {
-                for (int i = 5; i < ship.MaxColumns; i += 5)
+                for (int i = StackAmount; i < ship.MaxColumns; i += StackAmount)
                 {
                     if (containerTypeCount["Gekoelde"] < i)
                     {
@@ -114,44 +138,188 @@ namespace container
             }
 
             //Calculate the amount of rows
-            for (int i = ColumnAmount*5; i < ship.MaxRows*5; i += ColumnAmount*5 )
+            for (int i = ColumnAmount*StackAmount; i < ship.MaxRows*StackAmount; i += ColumnAmount*StackAmount)
             {
                 if (ListContainer.Count < i)
                 {
-                    RowAmount = (i/2)/5;
+                    RowAmount = i/StackAmount;
                     break;
                 }
             }
 
-            return new Container[ColumnAmount, RowAmount];
+            return new Container[ColumnAmount, RowAmount, StackAmount];
         }
 
-        public void AssignContainersToGrid(Container[,] grid)
+        public void AssignContainersToGrid(Container[,,] grid)
         {
-            //Assign the chilled containers
+            //Dictionary contain
+            List<ShipContainer> listNormalContainers = new List<ShipContainer>();
+            List<ShipContainer> listChilledContainers = new List<ShipContainer>();
+            List<ShipContainer> listValuableContainers = new List<ShipContainer>();
+
+            //Sort container type
             foreach (Container container in ListContainer)
             {
+                if (container.Type == Container.ListOfTypes[0])
+                {
+                    listNormalContainers.Add(new ShipContainer(container));
+                }
                 if (container.Type == Container.ListOfTypes[1])
                 {
-                    //c = column num
-                    for (int c = 0; c < grid.GetLength(1); c++)
+                    listChilledContainers.Add(new ShipContainer(container));
+                }
+                if (container.Type == Container.ListOfTypes[2])
+                {
+                    listValuableContainers.Add(new ShipContainer(container));
+                }
+            }
+
+            //Assign the chilled containers
+            foreach (ShipContainer container in listChilledContainers)
+            {
+                if (container.Type == Container.ListOfTypes[1] & container.Assigned == false)
+                {
+                    //c = column position
+                    //r = row position
+                    //s = stack position
+
+                    int r = 0;
+
+                    for (int c = 0; c < ColumnAmount; c++)
                     {
-                        //r = row num
-                        for (int r = 0; r < grid.GetLength(0); r++)
+                        for (int s = 0; s < StackAmount; s++)
                         {
-                            if (grid[c,r] == null)
+                            if (grid[c, r, s] == null)
                             {
-                                grid[c, r] = container;
+                                grid[c, r, s] = container;
+                                container.Assigned = true;
+                                c = Int32.MaxValue - ColumnAmount;
+                                r = Int32.MaxValue - RowAmount;
+                                s = Int32.MaxValue - StackAmount;
                                 break;
                             }
                         }
                     }
+                    if (container.Assigned == false)
+                    {
+                        container.ListErrorMessages.Add("Kon de container geen plek geven in het schip, verhoog het grootte van het schip");
+                        ListContainer[ListContainer.IndexOf(container)].ListErrorMessages.Add("Kon de container geen plek geven in het schip, verhoog het grootte van het schip");
+                    }
                 }
             }
 
-            //Assign the valuable containers
+            //Assign the normal containers 
+            for (int i = 0; i < listNormalContainers.Count; i++)
+            {
+                if (listNormalContainers[i].Type == Container.ListOfTypes[0] & listNormalContainers[i].Assigned == false)
+                {
+                    int counterValuableContainer = 0;
 
-            //Assign the normal containers
+                    //c = column position
+                    //r = row position
+                    //s = stack position
+
+                    for (int c = 0; c < ColumnAmount; c++)
+                    {
+                        for (int r = 0; r < RowAmount; r++)
+                        {
+                            for (int s = 0; s < StackAmount; s++)
+                            {
+                                //if (r == 0 & grid[c, r, s] == null | r == RowAmount - 1 & grid[c, r, s] == null)
+                                //{
+                                //    if (s == StackAmount - 1 | i == listNormalContainers.Count - 1)
+                                //    {
+                                //        foreach (ShipContainer valuableContainer in listValuableContainers)
+                                //        {
+                                //            if (valuableContainer.Assigned == false)
+                                //            {
+                                //                grid[c, r, s] = valuableContainer;
+                                //                valuableContainer.Assigned = true;
+                                //                break;
+                                //            }
+                                //        }
+                                //    }
+                                //}
+                                if (grid[c, r, s] == null)
+                                {
+                                    if (s == StackAmount-1 & listValuableContainers.Count > counterValuableContainer)
+                                    {
+                                        counterValuableContainer++;
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        grid[c, r, s] = listNormalContainers[i];
+                                        listNormalContainers[i].Assigned = true;
+                                        c = Int32.MaxValue - ColumnAmount;
+                                        r = Int32.MaxValue - RowAmount;
+                                        s = Int32.MaxValue - StackAmount;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (listNormalContainers[i].Assigned == false)
+                    {
+                        listNormalContainers[i].ListErrorMessages.Add("Kon de container geen plek geven in het schip, verhoog het grootte van het schip");
+                        ListContainer[ListContainer.IndexOf(listNormalContainers[i])].ListErrorMessages.Add("Kon de container geen plek geven in het schip, verhoog het grootte van het schip");
+                    }
+                }
+                
+            }
+
+            //Assign the valuable containers
+            foreach (ShipContainer container in listValuableContainers)
+            {
+                if (container.Type == Container.ListOfTypes[2] & container.Assigned == false)
+                {
+                    //c = column position
+                    //r = row position
+                    //s = stack position
+
+                    for (int c = 0; c < ColumnAmount; c++)
+                    {
+                        for (int r = 0; r < RowAmount; r ++)
+                        {
+                            for (int s = 0; s < StackAmount; s++)
+                            {
+                                if (grid[c, r, s] == null)
+                                {
+                                    if (s == 0)
+                                    {
+                                        grid[c, r, s] = container;
+                                        container.Assigned = true;
+                                        c = Int32.MaxValue - ColumnAmount;
+                                        r = Int32.MaxValue - RowAmount;
+                                        s = Int32.MaxValue - StackAmount;
+                                        break;
+                                    }
+                                    if (grid[c, r, s - 1] != null)
+                                    {
+                                        if (grid[c, r, s - 1].Type != Container.ListOfTypes[2])
+                                        {
+                                            grid[c, r, s] = container;
+                                            container.Assigned = true;
+                                            c = Int32.MaxValue - ColumnAmount;
+                                            r = Int32.MaxValue - RowAmount;
+                                            s = Int32.MaxValue - StackAmount;
+                                            break;
+                                        }
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (container.Assigned == false)
+                    {
+                        container.ListErrorMessages.Add("Kon de container geen plek geven in het schip, verhoog het grootte van het schip");
+                        ListContainer[ListContainer.IndexOf(container)].ListErrorMessages.Add("Kon de container geen plek geven in het schip, verhoog het grootte van het schip");
+                    }
+                }
+            }
+
         }
     }
 }

@@ -17,15 +17,22 @@ namespace container
             InitializeComponent();
             List<Container> listContainers = new List<Container>();
 
-            listContainers.Add(new Container(10, 10, 0, 10));
-            listContainers.Add(new Container(10, 10, 1, 10));
-            listContainers.Add(new Container(10, 10, 1, 10));
-            listContainers.Add(new Container(10, 10, 2, 10));
-            listContainers.Add(new Container(10, 10, 0, 10));
-            listContainers.Add(new Container(10, 10, 0, 10));
+            listContainers.Add(new Container(10, 10, "Normale", 10));
+            listContainers.Add(new Container(10, 10, "Gekoelde", 10));
+            listContainers.Add(new Container(10, 10, "Gekoelde", 10));
+            listContainers.Add(new Container(10, 10, "Waardevolle", 10));
+            listContainers.Add(new Container(10, 10, "Waardevolle", 10));
+            listContainers.Add(new Container(10, 10, "Waardevolle", 10));
+            listContainers.Add(new Container(10, 10, "Waardevolle", 10));
+            listContainers.Add(new Container(10, 10, "Normale", 10));
+            listContainers.Add(new Container(10, 10, "Normale", 10));
 
-            Ship eenSchip = new Ship(50,50,150, listContainers);
+            Ship eenSchip = new Ship(50,50,150,5, listContainers);
 
+            foreach (var item in eenSchip.Grid)
+            {
+                Console.WriteLine(item.Type);
+            }
 
             //if (container.ListErrorMessages.Count == 0)
             //{
