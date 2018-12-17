@@ -22,6 +22,7 @@ namespace container
             listContainers.Add(new Container(10, 10, "Waardevolle", 4));
             listContainers.Add(new Container(10, 10, "Waardevolle", 5));
             listContainers.Add(new Container(10, 10, "Waardevolle", 6));
+            listContainers.Add(new Container(10, 10, "Waardevolle", 7));
             listContainers.Add(new Container(10, 10, "Gekoelde", 10));
             listContainers.Add(new Container(10, 10, "Gekoelde", 10));
             listContainers.Add(new Container(10, 10, "Gekoelde", 10));

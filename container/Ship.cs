@@ -322,7 +322,7 @@ namespace container
                                 {
                                     if (grid[c, r, s] == null)
                                     {
-                                        //Check in current stack if there is a valuable container in it, if it is skip to next column
+                                        //Check in current stack if there is a valuable container in it, if it is skip to next row
                                         if (c < ColumnAmount & r < RowAmount & s < StackAmount & container.Assigned == false)
                                         {
                                             for (int i = 0; i < StackAmount; i++)
@@ -331,53 +331,58 @@ namespace container
                                                 {
                                                     if (grid[c, r, i].Type == Container.ListOfTypes[2])
                                                     {
-                                                        //c = Int32.MaxValue - ColumnAmount;
-                                                        //r = Int32.MaxValue - RowAmount;
-                                                        c++;
-                                                        //s = Int32.MaxValue - StackAmount;
+                                                        c = Int32.MaxValue - ColumnAmount;
+                                                        r = Int32.MaxValue - RowAmount;
+                                                        s = Int32.MaxValue - StackAmount;
+                                                        //r++;
                                                         break;
                                                     }
                                                 }
                                             }
                                         }
 
-                                        //Check in the previous row if there is a valuable container in stack 0, if it is skip to next column
+                                        //Check in the previous row if there is a valuable container in stack 0, if it is skip to next row
                                         if (c < ColumnAmount & r < RowAmount & s < StackAmount & container.Assigned == false)
                                         {
                                             if (r > 0 & grid[c, r - 1, 0] != null)
                                             {
                                                 if (grid[c, r - 1, 0].Type == Container.ListOfTypes[2])
                                                 {
-                                                    //c = Int32.MaxValue - ColumnAmount;
-                                                    c++;
-                                                    //r = Int32.MaxValue - RowAmount;
-                                                    //s = Int32.MaxValue - StackAmount;
+                                                    c = Int32.MaxValue - ColumnAmount;
+                                                    r = Int32.MaxValue - RowAmount;
+                                                    s = Int32.MaxValue - StackAmount;
+                                                    //r++;
                                                     break;
                                                 }
                                             }
                                         }
-                                        //if (c < ColumnAmount | r < RowAmount | s < StackAmount)
+
+                                        //Check in the previous row if there is a valuable container in stack > 0, if it is skip to next column
+                                        //if (c < ColumnAmount & r < RowAmount & s < StackAmount & container.Assigned == false)
                                         //{
-                                        //    if (r > 0 & grid[c, r - 1, StackAmount] != null)
+                                        //    if (s > 0 & r > 0)
                                         //    {
-                                        //        if (grid[c, r - 1, StackAmount].Type == Container.ListOfTypes[2])
+                                        //        if (grid[c, r - 1, 0] != null)
                                         //        {
-                                        //            c = Int32.MaxValue - ColumnAmount;
-                                        //            r = Int32.MaxValue - RowAmount;
-                                        //            s = Int32.MaxValue - StackAmount;
-                                        //            break;
+                                        //            if (grid[c, r - 1, 0].Type == Container.ListOfTypes[2])
+                                        //            {
+                                                        //c = Int32.MaxValue - ColumnAmount;
+                                                        //r = Int32.MaxValue - RowAmount;
+                                                        //s = Int32.MaxValue - StackAmount;
+                                        //                c++;
+                                        //                break;
+                                        //            }
                                         //        }
                                         //    }
                                         //}
-
 
                                         if (c < ColumnAmount & r < RowAmount & s < StackAmount & container.Assigned == false)
                                         {
                                             grid[c, r, s] = container;
                                             container.Assigned = true;
-                                            //c = Int32.MaxValue - ColumnAmount;
-                                            //r = Int32.MaxValue - RowAmount;
-                                            //s = Int32.MaxValue - StackAmount;
+                                            c = Int32.MaxValue - ColumnAmount;
+                                            r = Int32.MaxValue - RowAmount;
+                                            s = Int32.MaxValue - StackAmount;
                                             break;
                                         }
 
