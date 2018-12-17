@@ -33,9 +33,7 @@ namespace container
             listContainers.Add(new Container(10, 10, "Gekoelde", 10));
             listContainers.Add(new Container(10, 10, "Gekoelde", 10));
             listContainers.Add(new Container(10, 10, "Gekoelde", 10));
-            listContainers.Add(new Container(10, 10, "Normale", 10));
-            listContainers.Add(new Container(10, 10, "Normale", 10));
-            listContainers.Add(new Container(10, 10, "Normale", 10));
+
             listContainers.Add(new Container(10, 10, "Normale", 10));
             listContainers.Add(new Container(10, 10, "Normale", 10));
             listContainers.Add(new Container(10, 10, "Normale", 10));
