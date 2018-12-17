@@ -76,7 +76,6 @@ namespace container
             Ship eenSchip = new Ship(Convert.ToInt32(txtBoxHeight.Text), Convert.ToInt32(txtBoxWidth.Text), 
                                     Convert.ToInt32(txtBoxShipWeight.Text), Convert.ToInt32(txtBoxStack.Text), listContainers);
 
-
             int breakCounter = 0;
             foreach (var container in eenSchip.Grid)
             {

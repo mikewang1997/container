@@ -20,7 +20,7 @@ namespace container
 
         public override string ToString()
         {
-            return string.Format("Column:{0} Row:{1} Stack:{2}", Position.Column, Position.Row, Position.Stack);
+            return string.Format("Type:{0} Weight:{1}", Type, Weight);
         }
     }
 }

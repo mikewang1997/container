@@ -20,13 +20,13 @@ namespace container
         public List<ShipContainer> ListContainer { get; private set; }
 
         public int MaxColumns { get; private set; }
-        public int MaxRows{ get; private set; }
+        public int MaxRows { get; private set; }
         public int MaxStack { get; private set; }
 
         //checking related
         public List<string> ListErrorMessages { get; set; }
 
-        public Ship(int shipHeight, int shipWidth, int maxWeight, int stackAmount ,List<ShipContainer> listContainer)
+        public Ship(int shipHeight, int shipWidth, int maxWeight, int stackAmount, List<ShipContainer> listContainer)
         {
             ShipHeight = shipHeight;
             ShipWidth = shipWidth;
@@ -38,11 +38,10 @@ namespace container
             ListContainer = listContainer;
             foreach (ShipContainer container in ListContainer)
             {
-                CurrentWeight += container.Height;
-                container.Height= ShipHeight / MaxRows;
+                CurrentWeight += container.Weight;
+                container.Height = ShipHeight / MaxRows;
                 container.Width = ShipHeight / MaxColumns;
             }
-            ListContainer = listContainer;
 
             Grid = CreateGrid(this);
             AssignContainersToGrid(Grid);
@@ -60,7 +59,8 @@ namespace container
             bool WeightAccepted = false;
             bool StackAccepted = false;
 
-            if (CurrentWeight >= (ship.MaxWeight/2))
+            //Check minimal weight
+            if (CurrentWeight >= (ship.MaxWeight / 2))
             {
                 WeightAccepted = true;
             }
@@ -69,6 +69,16 @@ namespace container
                 ship.ListErrorMessages.Add("Schip voldoet niet aan de eis: minimaal 50% gewicht");
             }
 
+            if (CurrentWeight < ship.MaxWeight)
+            {
+                WeightAccepted = true;
+            }
+            else
+            {
+                ship.ListErrorMessages.Add("Huidige gewicht is groter dan het schip gewicht");
+            }
+
+            //Check requirement check
             if (StackAmount <= MaxStack)
             {
                 StackAccepted = true;
@@ -97,7 +107,7 @@ namespace container
             {
                 containerTypeCount.Add(Container.ListOfTypes[i], 0);
             }
-            
+
             //Count all the containerTypeCount
             foreach (Container container in ship.ListContainer)
             {
@@ -109,14 +119,14 @@ namespace container
                         break;
                     }
 
-                    if(i > Container.ListOfTypes.Count)
+                    if (i > Container.ListOfTypes.Count)
                     {
                         throw new ArgumentException("Container type is not correct, Check container ListOfTypes", "Container Type");
                     }
                 }
             }
             //Calculate column based of valuable containers
-            if      (containerTypeCount["Waardevolle"] > 0)
+            if (containerTypeCount["Waardevolle"] > 0)
             {
                 if (containerTypeCount["Gekoelde"] < StackAmount)
                 {
@@ -131,52 +141,38 @@ namespace container
                 }
             }
             //Calculate column based of chilled containers
-            if (containerTypeCount["Gekoelde"] > StackAmount)
+            ////if (containerTypeCount["Gekoelde"] > StackAmount)
+            ////{
+            if (Math.Ceiling((double)containerTypeCount["Gekoelde"] / StackAmount) <= 1)
             {
-                if (Math.Ceiling((double)containerTypeCount["Gekoelde"] / StackAmount) > 1)
-                {
-                    ColumnAmount = Convert.ToInt32(Math.Ceiling((double)containerTypeCount["Gekoelde"] / StackAmount));
-                }
-                else
-                {
-                    ColumnAmount = Convert.ToInt32(containerTypeCount["Gekoelde"] / StackAmount);
-                }
+                ColumnAmount = Convert.ToInt32(Math.Ceiling((double)containerTypeCount["Gekoelde"] / StackAmount));
             }
+            else
+            {
+                ColumnAmount = Convert.ToInt32(containerTypeCount["Gekoelde"] / StackAmount);
+            }
+            //}
 
             //Calculate the amount of rows
-            //for (int i = ColumnAmount*StackAmount; i < ship.MaxRows*StackAmount; i += ColumnAmount*StackAmount)
-            //{
-            //    if (ListContainer.Count < i)
-            //    {
-            //        RowAmount = i/StackAmount;
-            //        break;
-            //    }
-            //}
-            //int maxRowsForValuableContainer = MaxRows;
-
-            //int totalAssignable = Convert.ToInt32(Math.Ceiling((double)containerTypeCount["Gekoelde"] / StackAmount) * (MaxRows-1));
-            //int maxAssignable = ColumnAmount * MaxRows;
-
-            //int totalValuableAssignable = totalAssignable + maxAssignable;
-
-            int rowsBasedOnValuableContainers = Convert.ToInt32(Math.Ceiling((double)containerTypeCount["Waardevolle"] / ColumnAmount)) + (ColumnAmount/ColumnAmount);
+            int rowsBasedOnValuableContainers = 0; // just to initialize
 
             int rowsBasedOnTotalContainers = 0; // just to initialize
 
+            if (ColumnAmount > 0)
+            {
+                rowsBasedOnValuableContainers = Convert.ToInt32(Math.Ceiling((double)containerTypeCount["Waardevolle"] / ColumnAmount)) + (ColumnAmount / ColumnAmount);
+            }
 
-            //if (containerTypeCount["Gekoelde"] / StackAmount > 1)
-            //{
-            //    maxRowsForValuableContainer = MaxRows - 1;
-            //}
-            for (int i = StackAmount*ColumnAmount; i < MaxRows*StackAmount*ColumnAmount; i+=(StackAmount*ColumnAmount))
+            for (int i = StackAmount * ColumnAmount; i < MaxRows * StackAmount * ColumnAmount; i += (StackAmount * ColumnAmount))
             {
                 if (ListContainer.Count <= i)
                 {
-                    rowsBasedOnTotalContainers = i/(StackAmount*ColumnAmount);
+                    rowsBasedOnTotalContainers = i / (StackAmount * ColumnAmount);
                     break;
                 }
             }
 
+            //Pick the amount of rows who has priority
             if (rowsBasedOnValuableContainers >= rowsBasedOnTotalContainers)
             {
                 RowAmount = rowsBasedOnValuableContainers;
@@ -185,19 +181,6 @@ namespace container
             {
                 RowAmount = rowsBasedOnTotalContainers;
             }
-            //if (containerTypeCount["Waardevolle"] / ColumnAmount)
-            //{
-            //    Convert.ToInt32(Math.Ceiling((double)containerTypeCount["Waardevolle"] / ColumnAmount));
-            //}
-
-            //for (int i = 0; i < maxRowsForValuableContainer*ColumnAmount; i++)
-            //{
-            //    if (containerTypeCount["Waardevolle"] <= i)
-            //    {
-            //        RowAmount = i;
-            //        break;
-            //    }
-            //}
 
             return new ShipContainer[ColumnAmount, RowAmount, StackAmount];
         }
@@ -210,7 +193,7 @@ namespace container
             List<ShipContainer> listValuableContainers = new List<ShipContainer>();
 
             //Sort container type
-            foreach (Container container in ListContainer)
+            foreach (ShipContainer container in ListContainer)
             {
                 if (container.Type == Container.ListOfTypes[0])
                 {
@@ -223,10 +206,10 @@ namespace container
                 if (container.Type == Container.ListOfTypes[2])
                 {
                     listValuableContainers.Add(new ShipContainer(container));
-                }
+                } 
             }
 
-            //Assign the chilled containers
+            //Assign the chilled containers 
             foreach (ShipContainer container in listChilledContainers)
             {
                 if (container.Type == Container.ListOfTypes[1] & container.Assigned == false)
@@ -257,8 +240,8 @@ namespace container
                     }
                     if (container.Assigned == false)
                     {
+                        //ListContainer[ListContainer.IndexOf(container)].ListErrorMessages.Add("Kon de container geen plek geven in het schip, verhoog het grootte van het schip");
                         container.ListErrorMessages.Add("Kon de container geen plek geven in het schip, verhoog het grootte van het schip");
-                        ListContainer[ListContainer.IndexOf(container)].ListErrorMessages.Add("Kon de container geen plek geven in het schip, verhoog het grootte van het schip");
                     }
                 }
             }
@@ -370,8 +353,8 @@ namespace container
 
                     if (container.Assigned == false)
                     {
-                        container.ListErrorMessages.Add("Kon de container geen plek geven in het schip, verhoog het grootte van het schip");
                         //ListContainer[ListContainer.IndexOf(container)].ListErrorMessages.Add("Kon de container geen plek geven in het schip, verhoog het grootte van het schip");
+                        container.ListErrorMessages.Add("Kon de container geen plek geven in het schip, verhoog het grootte van het schip");
                     }
                 }
             }

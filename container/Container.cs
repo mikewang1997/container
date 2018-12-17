@@ -14,8 +14,6 @@ namespace container
         public string Type { get; set; }
         public int Weight { get; set; }
 
-
-
         public static Dictionary<int, string> ListOfTypes = new Dictionary<int, string>
         {
             { 0, "Normale" },
