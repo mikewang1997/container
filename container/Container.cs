@@ -25,10 +25,8 @@ namespace container
         //checking related
         public List<string> ListErrorMessages { get; set; }
 
-        public Container(int height, int width, string type, int weight)
+        public Container(string type, int weight)
         {
-            Height = height;
-            Width = width;
             foreach(var item in ListOfTypes)
             {
                 if (item.Value == type)
@@ -62,5 +60,7 @@ namespace container
                 return false;
             }
         }
+
+
     }
 }

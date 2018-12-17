@@ -16,8 +16,8 @@ namespace container
         public int RowAmount { get; private set; }
         public int ColumnAmount { get; private set; }
         public int StackAmount { get; private set; }
-        public Container[,,] Grid { get; private set; }
-        public List<Container> ListContainer { get; private set; }
+        public ShipContainer[,,] Grid { get; private set; }
+        public List<ShipContainer> ListContainer { get; private set; }
 
         public int MaxColumns { get; private set; }
         public int MaxRows{ get; private set; }
@@ -26,7 +26,7 @@ namespace container
         //checking related
         public List<string> ListErrorMessages { get; set; }
 
-        public Ship(int shipHeight, int shipWidth, int maxWeight, int stackAmount ,List<Container> listContainer)
+        public Ship(int shipHeight, int shipWidth, int maxWeight, int stackAmount ,List<ShipContainer> listContainer)
         {
             ShipHeight = shipHeight;
             ShipWidth = shipWidth;
@@ -36,9 +36,11 @@ namespace container
             MaxStack = 5;
             MaxWeight = maxWeight;
             ListContainer = listContainer;
-            foreach (Container container in ListContainer)
+            foreach (ShipContainer container in ListContainer)
             {
                 CurrentWeight += container.Height;
+                container.Height= ShipHeight / MaxRows;
+                container.Width = ShipHeight / MaxColumns;
             }
             ListContainer = listContainer;
 
@@ -49,7 +51,7 @@ namespace container
 
             if (!shipMeetsRequirements(this))
             {
-
+                //yet to implement if it doesnt meet requirements
             }
         }
 
@@ -86,7 +88,7 @@ namespace container
             }
         }
 
-        private Container[,,] CreateGrid(Ship ship)
+        private ShipContainer[,,] CreateGrid(Ship ship)
         {
             Dictionary<string, int> containerTypeCount = new Dictionary<string, int>();
 
@@ -150,15 +152,16 @@ namespace container
             //        break;
             //    }
             //}
-            int maxRowsForValuableContainer = MaxRows;
+            //int maxRowsForValuableContainer = MaxRows;
 
-            int totalAssignable = Convert.ToInt32(Math.Ceiling((double)containerTypeCount["Gekoelde"] / StackAmount) * (MaxRows-1));
-            int maxAssignable = ColumnAmount * MaxRows;
+            //int totalAssignable = Convert.ToInt32(Math.Ceiling((double)containerTypeCount["Gekoelde"] / StackAmount) * (MaxRows-1));
+            //int maxAssignable = ColumnAmount * MaxRows;
 
-            int totalValuableAssignable = totalAssignable + maxAssignable;
+            //int totalValuableAssignable = totalAssignable + maxAssignable;
 
-            int rowsBasedOnValuableContainers = Convert.ToInt32(Math.Ceiling((double)containerTypeCount["Waardevolle"] / ColumnAmount));
-            int rowsBasedOnTotalContainers = 0;
+            int rowsBasedOnValuableContainers = Convert.ToInt32(Math.Ceiling((double)containerTypeCount["Waardevolle"] / ColumnAmount)) + (ColumnAmount/ColumnAmount);
+
+            int rowsBasedOnTotalContainers = 0; // just to initialize
 
 
             //if (containerTypeCount["Gekoelde"] / StackAmount > 1)
@@ -196,7 +199,7 @@ namespace container
             //    }
             //}
 
-            return new Container[ColumnAmount, RowAmount, StackAmount];
+            return new ShipContainer[ColumnAmount, RowAmount, StackAmount];
         }
 
         public void AssignContainersToGrid(Container[,,] grid)
@@ -241,6 +244,9 @@ namespace container
                             if (grid[c, r, s] == null)
                             {
                                 grid[c, r, s] = container;
+                                container.Position.Column = c;
+                                container.Position.Row = r;
+                                container.Position.Stack = s;
                                 container.Assigned = true;
                                 c = Int32.MaxValue - ColumnAmount;
                                 r = Int32.MaxValue - RowAmount;
@@ -348,6 +354,9 @@ namespace container
                                     if (grid[c, r, s] == null)
                                     {
                                         grid[c, r, s] = container;
+                                        container.Position.Column = c;
+                                        container.Position.Row = r;
+                                        container.Position.Stack = s;
                                         container.Assigned = true;
                                         c = Int32.MaxValue - ColumnAmount;
                                         r = Int32.MaxValue - RowAmount;
@@ -443,6 +452,9 @@ namespace container
                                         if (c < ColumnAmount & r < RowAmount & s < StackAmount & container.Assigned == false)
                                         {
                                             grid[c, r, s] = container;
+                                            container.Position.Column = c;
+                                            container.Position.Row = r;
+                                            container.Position.Stack = s;
                                             container.Assigned = true;
                                             c = Int32.MaxValue - ColumnAmount;
                                             r = Int32.MaxValue - RowAmount;
