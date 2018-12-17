@@ -161,11 +161,11 @@ namespace container
             //{
             //    maxRowsForValuableContainer = MaxRows - 1;
             //}
-            for (int i = StackAmount; i < MaxRows*StackAmount*ColumnAmount; i+=StackAmount)
+            for (int i = StackAmount*ColumnAmount; i < MaxRows*StackAmount*ColumnAmount; i+=(StackAmount*ColumnAmount))
             {
                 if (containerTypeCount["Waardevolle"] <= i & ListContainer.Count <= i)
                 {
-                    RowAmount = i/StackAmount;
+                    RowAmount = i/(StackAmount*ColumnAmount);
                     break;
                 }
             }
