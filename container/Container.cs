@@ -12,7 +12,7 @@ namespace container
         Gekoelde = 1,
         Waardevolle = 2
     }
-    class Container
+    abstract class Container
     {
         //In tons
         public int Height { get; set; }

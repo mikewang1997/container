@@ -8,6 +8,86 @@ namespace container
 {
     static class ContainerAssigner
     {
+        public static void CreateGrid(Ship ship)
+        {
+            //Dictionary<string, int> containerTypeCount = new Dictionary<string, int>();
+            int countNormalContainers = 0;
+            int countChilledContainers = 0;
+            int countValuableContainers = 0;
+
+            foreach (ShipContainer container in ship.ListContainer)
+            {
+                if (container.Type == ListOfTypes.Normale.ToString())
+                {
+                    countNormalContainers++;
+                }
+                if (container.Type == ListOfTypes.Gekoelde.ToString())
+                {
+                    countChilledContainers++;
+                }
+                if (container.Type == ListOfTypes.Waardevolle.ToString())
+                {
+                    countValuableContainers++;
+                }
+            }
+
+            //Calculate column based of valuable containers
+            if (countValuableContainers > 0)
+            {
+                if (countChilledContainers < ship.StackAmount)
+                {
+                    if (countValuableContainers < ship.MaxColumns)
+                    {
+                        ship.SetRowAmount(countValuableContainers);
+                    }
+                    else
+                    {
+                        ship.ListErrorMessages.Add("Te veel waardevolle containers, verhoog het hoogte of verlaag het aantal waardevolle containers");
+                    }
+                }
+            }
+            //Calculate column based of chilled containers
+            if (Math.Ceiling((double)countChilledContainers / ship.StackAmount) <= 1)
+            {
+                ship.SetColumnAmount(Convert.ToInt32(Math.Ceiling((double)countChilledContainers / ship.StackAmount)));
+            }
+            else
+            {
+                ship.SetColumnAmount(Convert.ToInt32(countChilledContainers / ship.StackAmount));
+            }
+            //}
+
+            //Calculate the amount of rows
+            int rowsBasedOnValuableContainers = 0; // just to initialize
+
+            int rowsBasedOnTotalContainers = 0; // just to initialize
+
+            if (ship.ColumnAmount > 0)
+            {
+                rowsBasedOnValuableContainers = Convert.ToInt32(Math.Ceiling((double)countValuableContainers / ship.ColumnAmount)) + (ship.ColumnAmount / ship.ColumnAmount);
+            }
+
+            for (int i = ship.StackAmount * ship.ColumnAmount; i < ship.MaxRows * ship.StackAmount * ship.ColumnAmount; i += (ship.StackAmount * ship.ColumnAmount))
+            {
+                if (ship.ListContainer.Count <= i)
+                {
+                    rowsBasedOnTotalContainers = i / (ship.StackAmount * ship.ColumnAmount);
+                    break;
+                }
+            }
+
+            //Pick the amount of rows who has priority
+            if (rowsBasedOnValuableContainers >= rowsBasedOnTotalContainers)
+            {
+                ship.SetRowAmount(rowsBasedOnValuableContainers);
+            }
+            else
+            {
+                ship.SetRowAmount(rowsBasedOnTotalContainers);
+            }
+
+            ship.SetGrid(new ShipContainer[ship.ColumnAmount, ship.RowAmount, ship.StackAmount]);
+        }
         static public void AssignNormalContainers(Ship ship)
         {
             foreach (ShipContainer container in ship.ListContainer)

@@ -121,28 +121,40 @@ namespace container
             int countNormal = 0;
             int countChilled = 0;
             int countValuable = 0;
-            ShipContainer con = new ShipContainer(new Container(comboBoxContainerType.SelectedItem.ToString(), Convert.ToInt32(txtBoxContainerWeight.Text)));
-            listBoxContainer.Items.Add(con);
-            foreach (ShipContainer c in listBoxContainer.Items)
+            ShipContainer con = new ShipContainer(comboBoxContainerType.SelectedItem.ToString(), Convert.ToInt32(txtBoxContainerWeight.Text));
+
+            if (con.ListErrorMessages.Count <= 0)
             {
-                if (c.Type == ListOfTypes.Normale.ToString())
+                listBoxContainer.Items.Add(con);
+                foreach (ShipContainer c in listBoxContainer.Items)
                 {
-                    countNormal += 1;
+                    if (c.Type == ListOfTypes.Normale.ToString())
+                    {
+                        countNormal += 1;
+                    }
+                    if (c.Type == ListOfTypes.Gekoelde.ToString())
+                    {
+                        countChilled += 1;
+                    }
+                    if (c.Type == ListOfTypes.Waardevolle.ToString())
+                    {
+                        countValuable += 1;
+                    }
+                    countWeight += c.Weight;
                 }
-                if (c.Type == ListOfTypes.Gekoelde.ToString())
-                {
-                    countChilled += 1;
-                }
-                if (c.Type == ListOfTypes.Waardevolle.ToString())
-                {
-                    countValuable += 1;
-                }
-                countWeight += c.Weight;
+                lblTotalWeight.Text = "Total weight:" + countWeight;
+                lblNormal.Text = "Total normal:" + countNormal;
+                lblChilled.Text = "Total chilled:" + countChilled;
+                lblValuable.Text = "Total valuable:" + countValuable;
             }
-            lblTotalWeight.Text = "Total weight:" + countWeight;
-            lblNormal.Text = "Total normal:" + countNormal;
-            lblChilled.Text = "Total chilled:" + countChilled; 
-            lblValuable.Text = "Total valuable:" + countValuable;
+            else
+            {
+                foreach (string message in con.ListErrorMessages)
+                {
+                    MessageBox.Show(message);
+                }
+            }
+
         }
     }
 }

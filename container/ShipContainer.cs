@@ -11,9 +11,8 @@ namespace container
         public bool Assigned { get; set; }
         public ShipPosition Position { get; set; }
 
-        public ShipContainer(Container container) : base(container.Type, container.Weight)
+        public ShipContainer(string type, int weight) : base(type, weight)
         {
-            Weight = container.Weight;
             Assigned = false;
             Position = new ShipPosition();
         }
