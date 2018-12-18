@@ -17,9 +17,9 @@ namespace container
         {
             InitializeComponent();
 
-            foreach (var item in container.Container.ListOfTypes)
+            foreach (var item in Enum.GetNames(typeof(ListOfTypes)))
             {
-                comboBoxContainerType.Items.Add(item.Value);
+                comboBoxContainerType.Items.Add(item);
             }
 
             //listContainers.Add(new ShipContainer(new Container(10, 10, "Waardevolle", 1)));
@@ -125,15 +125,15 @@ namespace container
             listBoxContainer.Items.Add(con);
             foreach (ShipContainer c in listBoxContainer.Items)
             {
-                if (c.Type == container.Container.ListOfTypes[0])
+                if (c.Type == ListOfTypes.Normale.ToString())
                 {
                     countNormal += 1;
                 }
-                if (c.Type == container.Container.ListOfTypes[1])
+                if (c.Type == ListOfTypes.Gekoelde.ToString())
                 {
                     countChilled += 1;
                 }
-                if (c.Type == container.Container.ListOfTypes[2])
+                if (c.Type == ListOfTypes.Waardevolle.ToString())
                 {
                     countValuable += 1;
                 }

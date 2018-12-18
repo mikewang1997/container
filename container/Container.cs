@@ -6,6 +6,12 @@ using System.Threading.Tasks;
 
 namespace container
 {
+    public enum ListOfTypes
+    {
+        Normale = 0,
+        Gekoelde = 1,
+        Waardevolle = 2
+    }
     class Container
     {
         //In tons
@@ -14,22 +20,23 @@ namespace container
         public string Type { get; set; }
         public int Weight { get; set; }
 
-        public static Dictionary<int, string> ListOfTypes = new Dictionary<int, string>
-        {
-            { 0, "Normale" },
-            { 1, "Gekoelde" },
-            { 2, "Waardevolle" }
-        };
+        //public static Dictionary<int, string> ListOfTypes = new Dictionary<int, string>
+        //{
+        //    { 0, "Normale" },
+        //    { 1, "Gekoelde" },
+        //    { 2, "Waardevolle" }
+        //};
+
         //checking related
         public List<string> ListErrorMessages { get; set; }
 
         public Container(string type, int weight)
         {
-            foreach(var item in ListOfTypes)
+            foreach(var t in Enum.GetNames(typeof(ListOfTypes)))
             {
-                if (item.Value == type)
+                if (type == t)
                 {
-                    Type = type;
+                    Type = t;
                     break;
                 }
             }
