@@ -47,13 +47,14 @@ namespace container
                 }
             }
             //Calculate column based of chilled containers
-            if (Math.Ceiling((double)countChilledContainers / ship.StackAmount) <= 1)
+            if (Math.Ceiling((double)countChilledContainers / ship.StackAmount) >= 1)
             {
                 ship.SetColumnAmount(Convert.ToInt32(Math.Ceiling((double)countChilledContainers / ship.StackAmount)));
             }
             else
             {
                 ship.SetColumnAmount(Convert.ToInt32(countChilledContainers / ship.StackAmount));
+
             }
             //}
 
